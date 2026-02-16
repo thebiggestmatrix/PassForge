@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PassForge — A modern, beautiful, fully client-side password generator. Generate strong, customizable passwords with real-time strength analysis. No tracking, no servers, 100% private.">
+    <meta name="theme-color" content="#06060e">
+    <meta property="og:title" content="PassForge — Secure Password Generator">
+    <meta property="og:description" content="Generate strong, unique passwords tailored to your needs. Everything runs locally in your browser.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+    <title>PassForge — Secure Password Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#06060e] text-white font-sans">
+    <canvas id="particles-canvas" class="pointer-events-none fixed inset-0 z-0" style="width:100%;height:100%"></canvas>
+
+    <div class="pointer-events-none fixed inset-0 overflow-hidden z-[1]">
+        <div class="absolute -top-[30%] -left-[15%] h-[70%] w-[50%] rounded-full bg-violet-600/[0.07] blur-[150px] animate-blob"></div>
+        <div class="absolute -bottom-[30%] -right-[15%] h-[70%] w-[50%] rounded-full bg-cyan-600/[0.07] blur-[150px] animate-blob animation-delay-2000"></div>
+        <div class="absolute top-[20%] right-[10%] h-[40%] w-[30%] rounded-full bg-fuchsia-600/[0.04] blur-[120px] animate-blob animation-delay-4000"></div>
+        <div class="absolute bottom-[10%] left-[20%] h-[30%] w-[25%] rounded-full bg-indigo-600/[0.05] blur-[100px] animate-blob animation-delay-6000"></div>
+    </div>
+
+    <div class="pointer-events-none fixed inset-0 z-[2] grid-bg"></div>
+    <div class="pointer-events-none fixed inset-0 z-[2] grid-dots"></div>
+
+    <div id="copy-toast" class="copy-toast">
+        <i data-lucide="check-circle" class="w-4 h-4"></i>
+        <span>Copied to clipboard!</span>
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+        <header class="mb-8 sm:mb-12 text-center animate-fade-in">
+            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/[0.08] px-4 py-1.5 text-sm text-violet-300 backdrop-blur-sm">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Secure passwords in an instant</span>
+            </div>
+            <h1 class="mb-3 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                <span class="title-gradient">
+                    PassForge
+                </span>
+            </h1>
+            <p class="mx-auto max-w-xl text-sm sm:text-base text-slate-400 leading-relaxed">
+                Generate strong, unique passwords tailored to your needs.
+                <br class="hidden sm:block">
+                Everything runs locally — your data never leaves the browser.
+            </p>
+            <div class="mt-4 hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-600">
+                <kbd class="kbd">Space</kbd>
+                <span>to regenerate</span>
+            </div>
+        </header>
+
+        <div class="grid gap-5 sm:gap-8 lg:grid-cols-[1fr_380px]">
+            <div class="space-y-4 sm:space-y-6">
+                <div class="card rounded-3xl p-4 sm:p-6 md:p-8">
+                    <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/15 ring-1 ring-violet-500/10">
+                                <i data-lucide="lock" class="w-5 h-5 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-semibold">Generated Passwords</h2>
+                                <p class="text-xs text-slate-500">Click copy to save</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="copy-all-btn" class="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-slate-400 transition-all cursor-pointer hover:bg-white/[0.06] hover:text-white hover:border-white/15 active:scale-95" title="Copy all passwords">
+                                <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                                <span class="hidden sm:inline">Copy All</span>
+                            </button>
+                            <button id="regenerate-btn" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 px-5 py-2.5 text-sm font-medium text-violet-300 transition-all cursor-pointer hover:from-violet-600/30 hover:to-fuchsia-600/30 hover:text-violet-200 hover:border-violet-500/30 active:scale-95">
+                                <i data-lucide="refresh-cw" class="w-4 h-4 regen-icon"></i>
+                                Regenerate
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="no-charset-warning" class="hidden items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/[0.08] p-4 text-red-300 mb-4">
+                        <i data-lucide="shield-x" class="w-5 h-5 shrink-0"></i>
+                        <p class="text-sm">Select at least one character set to generate a password.</p>
+                    </div>
+
+                    <div id="passwords-list" class="space-y-3"></div>
+
+                    <div id="stats-panel" class="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-3" style="display:none">
+                        <div class="stat-card rounded-xl border border-white/[0.06] bg-white/[0.03] p-2.5 sm:p-4 text-center transition-all">
+                            <p class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500 mb-0.5 sm:mb-1">Length</p>
+                            <p id="stat-length" class="text-lg sm:text-2xl font-bold text-white tabular-nums">20</p>
+                        </div>
+                        <div class="stat-card rounded-xl border border-white/[0.06] bg-white/[0.03] p-2.5 sm:p-4 text-center transition-all">
+                            <p class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500 mb-0.5 sm:mb-1">Entropy</p>
+                            <p id="stat-entropy" class="text-lg sm:text-2xl font-bold text-cyan-400 tabular-nums">0<span class="text-xs sm:text-sm font-normal text-slate-500 ml-0.5 sm:ml-1">bits</span></p>
+                        </div>
+                        <div class="stat-card rounded-xl border border-white/[0.06] bg-white/[0.03] p-2.5 sm:p-4 text-center transition-all">
+                            <p class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500 mb-0.5 sm:mb-1">Crack Time</p>
+                            <p id="stat-crack" class="text-sm sm:text-lg font-bold text-emerald-400 leading-tight">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded-3xl p-4 sm:p-6 md:p-8">
+                    <button id="history-toggle" class="flex w-full items-center justify-between cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-fuchsia-500/15 ring-1 ring-fuchsia-500/10">
+                                <i data-lucide="history" class="w-5 h-5 text-fuchsia-400"></i>
+                            </div>
+                            <div class="text-left">
+                                <h2 class="text-lg font-semibold">Copy History</h2>
+                                <p id="history-count-text" class="text-xs text-slate-500">No passwords copied yet</p>
+                            </div>
+                        </div>
+                        <span id="history-chevron" class="inline-flex transition-transform duration-300">
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                        </span>
+                    </button>
+
+                    <div id="history-content" class="overflow-hidden transition-all duration-500" style="max-height:0;opacity:0">
+                        <div id="history-empty" class="text-center text-sm text-slate-500 py-8">
+                            Copied passwords will appear here
+                        </div>
+                        <div id="history-entries" style="display:none">
+                            <div class="mb-3 flex justify-end">
+                                <button id="history-clear-btn" class="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors cursor-pointer">
+                                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                    Clear all
+                                </button>
+                            </div>
+                            <div id="history-list" class="max-h-64 space-y-2 overflow-y-auto pr-2 custom-scrollbar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4 sm:space-y-6">
+                <div class="card rounded-3xl p-4 sm:p-6">
+                    <div class="mb-5 flex items-center justify-between">
+                        <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                            <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i>
+                            Password Length
+                        </h3>
+                        <input id="length-input" type="number" min="4" max="128" value="20" class="w-16 rounded-lg border border-white/10 bg-white/[0.05] px-2 py-1.5 text-center text-lg font-bold text-white font-mono outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/20 transition-all">
+                    </div>
+                    <div class="relative">
+                        <div class="slider-track-bg"></div>
+                        <div id="slider-fill" class="slider-track-fill" style="width:12.9%"></div>
+                        <input id="length-slider" type="range" min="4" max="128" value="20" class="password-slider w-full cursor-pointer">
+                    </div>
+                    <div class="mt-3 flex justify-between text-[10px] uppercase tracking-wider text-slate-600">
+                        <span>4</span><span>32</span><span>64</span><span>96</span><span>128</span>
+                    </div>
+                </div>
+
+                <div class="card rounded-3xl p-4 sm:p-6">
+                    <h3 class="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        <i data-lucide="hash" class="w-4 h-4 text-cyan-400"></i>
+                        Character Sets
+                    </h3>
+                    <div class="grid gap-2">
+                        <button class="toggle-option active" data-option="lowercase" data-color="violet">
+                            <div class="toggle-icon-wrap"><i data-lucide="case-sensitive" class="w-5 h-5"></i></div>
+                            <div class="text-left flex-1 min-w-0">
+                                <div class="toggle-label">Lowercase</div>
+                                <div class="text-xs text-slate-500 truncate">a b c d e f g ...</div>
+                            </div>
+                            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                        </button>
+                        <button class="toggle-option active" data-option="uppercase" data-color="indigo">
+                            <div class="toggle-icon-wrap"><i data-lucide="case-upper" class="w-5 h-5"></i></div>
+                            <div class="text-left flex-1 min-w-0">
+                                <div class="toggle-label">Uppercase</div>
+                                <div class="text-xs text-slate-500 truncate">A B C D E F G ...</div>
+                            </div>
+                            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                        </button>
+                        <button class="toggle-option active" data-option="numbers" data-color="cyan">
+                            <div class="toggle-icon-wrap"><i data-lucide="hash" class="w-5 h-5"></i></div>
+                            <div class="text-left flex-1 min-w-0">
+                                <div class="toggle-label">Numbers</div>
+                                <div class="text-xs text-slate-500 truncate">0 1 2 3 4 5 6 ...</div>
+                            </div>
+                            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                        </button>
+                        <button class="toggle-option active" data-option="symbols" data-color="fuchsia">
+                            <div class="toggle-icon-wrap"><i data-lucide="at-sign" class="w-5 h-5"></i></div>
+                            <div class="text-left flex-1 min-w-0">
+                                <div class="toggle-label">Symbols</div>
+                                <div class="text-xs text-slate-500 truncate">! @ # $ % ^ & * ...</div>
+                            </div>
+                            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card rounded-3xl p-4 sm:p-6">
+                    <h3 class="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i>
+                        Advanced Options
+                    </h3>
+                    <div class="space-y-4">
+                        <label class="flex items-center justify-between gap-3 cursor-pointer group">
+                            <div>
+                                <p class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Exclude similar characters</p>
+                                <p class="text-xs text-slate-600">i, l, L, I, 1, o, O, 0</p>
+                            </div>
+                            <div class="adv-toggle-switch" data-option="excludeSimilar">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </label>
+                        <label class="flex items-center justify-between gap-3 cursor-pointer group">
+                            <div>
+                                <p class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Exclude ambiguous symbols</p>
+                                <p class="text-xs text-slate-600">{ } [ ] ( ) / \ ' " ~</p>
+                            </div>
+                            <div class="adv-toggle-switch" data-option="excludeAmbiguous">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-white/[0.06]">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-sm font-medium text-slate-300">Password count</p>
+                            <span id="quantity-display" class="text-sm font-bold text-violet-400 tabular-nums">3</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="quantity-btn flex-1 rounded-xl py-2.5 text-sm font-medium transition-all cursor-pointer duration-300" data-value="1">1</button>
+                            <button class="quantity-btn active flex-1 rounded-xl py-2.5 text-sm font-medium transition-all cursor-pointer duration-300" data-value="3">3</button>
+                            <button class="quantity-btn flex-1 rounded-xl py-2.5 text-sm font-medium transition-all cursor-pointer duration-300" data-value="5">5</button>
+                            <button class="quantity-btn flex-1 rounded-xl py-2.5 text-sm font-medium transition-all cursor-pointer duration-300" data-value="10">10</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl border border-emerald-500/10 bg-emerald-500/[0.03] p-4 backdrop-blur-xl">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-sm font-medium text-emerald-300">100% Client-Side</p>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">All generation happens in your browser. No data is sent to any server. Your passwords stay private.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-10 sm:mt-16 pb-6 sm:pb-8">
+            <div class="flex flex-col items-center gap-3">
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/thebiggestmatrix" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:text-violet-400 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                </div>
+                <div class="inline-flex items-center gap-2 text-[10px] sm:text-xs text-slate-600 text-center">
+                    <i data-lucide="lock" class="w-3 h-3 shrink-0"></i>
+                    <span>Built with security in mind — no tracking, no analytics, no cookies</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
