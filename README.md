@@ -10,7 +10,7 @@
 
 # ✨ PassForge
 
-# Demo page: https://github.com/thebiggestmatrix/PassForge
+# Demo page: https://thebiggestmatrix.github.io/PassForge/
 
 ---
 
