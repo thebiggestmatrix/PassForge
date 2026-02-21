@@ -19,7 +19,7 @@
 
 ### Secure Password Generator
 
-A modern, beautiful, and fully client-side password generator built with vanilla HTML, CSS, and JavaScript. Generate strong, customizable passwords with real-time strength analysis — all running locally in your browser.
+A modern, beautiful, and fully client-side password generator built with vanilla HTML, CSS, and JavaScript. Generate strong, customizable passwords with real-time strength analysis - all running locally in your browser.
 
 <br />
 
@@ -34,39 +34,39 @@ A modern, beautiful, and fully client-side password generator built with vanilla
 ## 🎯 Features
 
 ### 🔐 Password Generation
-- **Adjustable length** — from **4 to 128** characters via an interactive slider or manual input
-- **Character set toggles** — independently enable/disable lowercase, uppercase, numbers, and symbols
-- **Exclude similar characters** — removes confusing characters like `i`, `l`, `1`, `I`, `O`, `0`
-- **Exclude ambiguous symbols** — removes hard-to-read symbols like `{ } [ ] ( ) / \ ' " ~`
-- **Batch generation** — generate **1, 3, 5, or 10** passwords at once
-- **Guaranteed character inclusion** — at least one character from each enabled set is always present
-- **Fisher-Yates shuffle** — cryptographically fair distribution of characters
+- **Adjustable length** - from **4 to 128** characters via an interactive slider or manual input
+- **Character set toggles** - independently enable/disable lowercase, uppercase, numbers, and symbols
+- **Exclude similar characters** - removes confusing characters like `i`, `l`, `1`, `I`, `O`, `0`
+- **Exclude ambiguous symbols** - removes hard-to-read symbols like `{ } [ ] ( ) / \ ' " ~`
+- **Batch generation** - generate **1, 3, 5, or 10** passwords at once
+- **Guaranteed character inclusion** - at least one character from each enabled set is always present
+- **Fisher-Yates shuffle** - cryptographically fair distribution of characters
 
 ### 📊 Real-Time Analysis
-- **Strength indicator** — 5-segment color bar with labels from *Very Weak* to *Very Strong*
-- **Entropy calculation** — displays password entropy in bits
-- **Crack time estimation** — human-readable estimates (Instantly → Eternity ♾️)
-- **Reactive updates** — all stats and passwords regenerate instantly when any option changes
+- **Strength indicator** - 5-segment color bar with labels from *Very Weak* to *Very Strong*
+- **Entropy calculation** - displays password entropy in bits
+- **Crack time estimation** - human-readable estimates (Instantly → Eternity ♾️)
+- **Reactive updates** - all stats and passwords regenerate instantly when any option changes
 
 ### 🎨 Beautiful UI
-- **Dark glassmorphism theme** — frosted glass cards with subtle borders and shadows
-- **Animated particle system** — canvas-based floating particles with connection lines and mouse interaction
-- **Grid background** — subtle violet-tinted grid with glowing intersection dots
-- **Gradient blobs** — layered atmospheric gradient orbs for depth
-- **Smooth animations** — fade-in effects, hover transitions, and pulse animations
-- **Fully responsive** — looks great on mobile, tablet, and desktop
+- **Dark glassmorphism theme** - frosted glass cards with subtle borders and shadows
+- **Animated particle system** - canvas-based floating particles with connection lines and mouse interaction
+- **Grid background** - subtle violet-tinted grid with glowing intersection dots
+- **Gradient blobs** - layered atmospheric gradient orbs for depth
+- **Smooth animations** - fade-in effects, hover transitions, and pulse animations
+- **Fully responsive** - looks great on mobile, tablet, and desktop
 
 ### 🛡️ Privacy & Security
-- **100% client-side** — no data ever leaves your browser
-- **No tracking** — zero analytics, cookies, or telemetry
-- **No server calls** — everything is computed locally in JavaScript
-- **No dependencies on external APIs** — works completely offline after loading
+- **100% client-side** - no data ever leaves your browser
+- **No tracking** - zero analytics, cookies, or telemetry
+- **No server calls** - everything is computed locally in JavaScript
+- **No dependencies on external APIs** - works completely offline after loading
 
 ### 📋 Additional Features
-- **One-click copy** — copy any password to clipboard instantly
-- **Show/hide passwords** — toggle blur effect for privacy when sharing screen
-- **Copy history** — keeps track of previously copied passwords with timestamps and strength indicators
-- **History management** — expand/collapse history panel, clear all entries
+- **One-click copy** - copy any password to clipboard instantly
+- **Show/hide passwords** - toggle blur effect for privacy when sharing screen
+- **Copy history** - keeps track of previously copied passwords with timestamps and strength indicators
+- **History management** - expand/collapse history panel, clear all entries
 
 ---
 
@@ -92,9 +92,9 @@ Or simply double-click `index.html` to launch it.
 ### Generating Passwords
 
 1. **Adjust the length** using the slider or type a number directly (4–128)
-2. **Toggle character sets** — enable or disable lowercase, uppercase, numbers, and symbols
+2. **Toggle character sets** - enable or disable lowercase, uppercase, numbers, and symbols
 3. **Fine-tune** with advanced options like excluding similar or ambiguous characters
-4. **Choose quantity** — generate 1, 3, 5, or 10 passwords at once
+4. **Choose quantity** - generate 1, 3, 5, or 10 passwords at once
 5. Passwords **auto-generate** whenever you change any setting
 
 ### Copying & Managing
@@ -112,7 +112,7 @@ Or simply double-click `index.html` to launch it.
 | 🟠 Weak | 3–4 | Below minimum security standards |
 | 🟡 Fair | 5–6 | Acceptable for low-security use |
 | 🟢 Strong | 7–8 | Good for most purposes |
-| 🔵 Very Strong | 9 | Excellent — recommended |
+| 🔵 Very Strong | 9 | Excellent - recommended |
 
 **Tips for strong passwords:**
 - Use **16+ characters**
@@ -158,10 +158,10 @@ passforge/
 
 ### Password Generation Algorithm
 
-1. **Character pool construction** — builds a string from all enabled character sets
-2. **Guaranteed inclusion** — picks one random character from each enabled set
-3. **Fill remaining** — fills the rest with random characters from the combined pool
-4. **Fisher-Yates shuffle** — shuffles the entire array for uniform distribution
+1. **Character pool construction** - builds a string from all enabled character sets
+2. **Guaranteed inclusion** - picks one random character from each enabled set
+3. **Fill remaining** - fills the rest with random characters from the combined pool
+4. **Fisher-Yates shuffle** - shuffles the entire array for uniform distribution
 
 ### Strength Scoring (0–9)
 
@@ -195,7 +195,7 @@ Where `pool_size` is the total number of possible characters based on enabled se
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details.
 
 You are free to use, modify, and distribute this software for any purpose.
 
